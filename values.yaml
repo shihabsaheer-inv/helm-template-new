@@ -1,0 +1,212 @@
+  # ========================================
+  # Global Configuration
+  # ========================================
+  global:
+    appName: myapp
+    environment: default
+
+  # ========================================
+  # Image Configuration
+  # ========================================
+  image:
+    repository: nginx
+    tag: latest
+    pullPolicy: IfNotPresent
+
+  # ========================================
+  # Replica Configuration
+  # ========================================
+  replicaCount: 1
+
+  # ========================================
+  # Deployment toggle
+  # ========================================
+  deployment:
+    enabled: true
+
+  # ========================================
+  # Service Configuration
+  # ========================================
+  service:
+    enabled: true
+    type: ClusterIP
+    port: 80
+    targetPort: 80
+
+  # ========================================
+  # Ingress Configuration
+  # ========================================
+  ingress:
+    enabled: false
+    className: nginx
+    annotations: {}
+    hosts:
+      - host: myapp.local
+        paths:
+          - path: /
+            pathType: Prefix
+    tls: []
+
+  # ========================================
+  # Horizontal Pod Autoscaler
+  # ========================================
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 5
+    cpu:
+      enabled: true
+      targetPercentage: 80
+    memory:
+      enabled: false
+      targetPercentage: 75
+
+  # ========================================
+  # Istio Configuration
+  # ========================================
+  istio:
+    enabled: false
+    gateway: my-gateway
+    hosts:
+      - myapp.local
+    retries: 3
+
+  # ========================================
+  # Rollout Configuration (for Argo Rollouts)
+  # ========================================
+  rollout:
+    enabled: false
+    strategy: Canary
+
+  # ========================================
+  # ConfigMap Configuration
+  # ========================================
+  config:
+    enabled: true
+    # Mount as files (reads from config/{environment}.json|yaml|properties)
+    mountAsFiles: false
+    mountPath: "/etc/config"
+    # If mountAsFiles is true, you can specify which files to mount
+    items: []
+    # Example:
+    # items:
+    #   - key: config.json
+    #     path: app-config.json
+    #   - key: config.yaml
+    #     path: app-config.yaml
+    
+    # Traditional key-value pairs (used when mountAsFiles: false)
+    data:
+      ENABLE_FEATURE_X: "true"
+      LOG_LEVEL: "info"
+
+  # ========================================
+  # Secrets Configuration
+  # ========================================
+  secrets:
+    enabled: true
+    # Mount secrets as files (reads from secrets/{environment}.json)
+    mountAsFiles: true
+    mountPath: "/etc/secrets"
+    # If mountAsFiles is true, you can specify which files to mount
+    items: []
+    # Example:
+    # items:
+    #   - key: secrets.json
+    #     path: credentials.json
+    
+    # Traditional key-value pairs (used when mountAsFiles: false or as fallback)
+    data:
+      DB_PASSWORD: "ZGVmYXVsdC1wYXNzd29yZA=="
+      API_KEY: "ZGVmYXVsdC1hcGkta2V5"
+
+  # ========================================
+  # CronJob Configuration
+  # ========================================
+  cronjob:
+    enabled: false
+    schedule: "0 * * * *"
+    successfulJobsHistoryLimit: 3
+    failedJobsHistoryLimit: 1
+    image:
+      repository: busybox
+      tag: latest
+      pullPolicy: IfNotPresent
+    command:
+      - /bin/sh
+      - -c
+      - "echo Hello from CronJob && date"
+    env:
+      - name: ENVIRONMENT
+        value: "dev"
+      - name: LOG_LEVEL
+        value: "info"
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "128Mi"
+      limits:
+        cpu: "200m"
+        memory: "256Mi"
+
+  # ========================================
+  # Resources (requests/limits)
+  # ========================================
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "128Mi"
+    limits:
+      cpu: "500m"
+      memory: "256Mi"
+
+  # ========================================
+  # Probes (readiness / liveness)
+  # ========================================
+  probes:
+    readiness:
+      enabled: true
+      path: /
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      failureThreshold: 3
+    liveness:
+      enabled: true
+      path: /
+      initialDelaySeconds: 10
+      periodSeconds: 15
+      failureThreshold: 3
+
+  # ========================================
+  # Additional Volumes and Mounts (legacy support)
+  # ========================================
+  volumes:
+    secrets:
+      enabled: false
+      name: secret-volume
+      mountPath: /mnt/secrets
+      secretName: ""
+    config:
+      enabled: true
+      name: config-volume
+      mountPath: /mnt/config
+      readOnly: true
+      configMapName: ""
+
+  # ========================================
+  # Common Labels (optional)
+  # ========================================
+  commonLabels: {}
+
+  # ========================================
+  # Name Overrides (optional)
+  # ========================================
+  nameOverride: ""
+  fullnameOverride: ""
+
+  # ========================================
+  # Service Account (optional)
+  # ========================================
+  serviceAccount:
+    create: false
+    name: ""

@@ -1,0 +1,37 @@
+{{- if .Values.config.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mychart.fullname" . }}-config
+  labels:
+    {{- include "mychart.labels" . | nindent 4 }}
+data:
+  {{- $env := .Values.global.environment | default "default" }}
+
+  {{- $jsonFile := printf "config/%s.json" $env }}
+  {{- if .Files.Get $jsonFile }}
+  config.json: |
+{{ .Files.Get $jsonFile | indent 4 }}
+  {{- else if .Files.Get "config/default.json" }}
+  config.json: |
+{{ .Files.Get "config/default.json" | indent 4 }}
+  {{- end }}
+
+  {{- $yamlFile := printf "config/%s.yaml" $env }}
+  {{- if .Files.Get $yamlFile }}
+  config.yaml: |
+{{ .Files.Get $yamlFile | indent 4 }}
+  {{- else if .Files.Get "config/default.yaml" }}
+  config.yaml: |
+{{ .Files.Get "config/default.yaml" | indent 4 }}
+  {{- end }}
+
+  {{- $propsFile := printf "config/application-%s.properties" $env }}
+  {{- if .Files.Get $propsFile }}
+  application.properties: |
+{{ .Files.Get $propsFile | indent 4 }}
+  {{- else if .Files.Get "config/application.properties" }}
+  application.properties: |
+{{ .Files.Get "config/application.properties" | indent 4 }}
+  {{- end }}
+{{- end }}

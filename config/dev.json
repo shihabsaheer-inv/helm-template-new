@@ -1,0 +1,13 @@
+{
+  "appName": "myapp",
+  "environment": "dev",
+  "logLevel": "debug",
+  "featureFlags": {
+    "enableNewLogin": true,
+    "enableBetaDashboard": false
+  },
+  "apiEndpoints": {
+    "userService": "http://user-service.dev.svc.cluster.local",
+    "orderService": "http://order-service.dev.svc.cluster.local"
+  }
+}

@@ -1,0 +1,81 @@
+# ========================================
+# Development Environment Overrides
+# ========================================
+global:
+  environment: staging
+
+# ========================================
+# Image Configuration
+# Always pull the latest image for quick dev iterations
+# ========================================
+image:
+  repository: nginx
+  tag: latest
+  pullPolicy: Always
+
+# ========================================
+# Service Configuration
+# Use NodePort for easy local/external access in development
+# ========================================
+service:
+  type: NodePort
+  port: 80
+  targetPort: 80
+
+# ========================================
+# ConfigMap Configuration
+# Disabled for dev — can be enabled when config files are needed
+# ========================================
+config:
+  enabled: false
+  mountAsFiles: true
+  items:
+    - key: config.json
+      path: app-config.json
+    - key: config.yaml
+      path: app-config.yaml
+    - key: application.properties
+      path: application.properties
+
+# ========================================
+# Secrets Configuration
+# Disabled for dev — avoids secret mounting during local testing
+# ========================================
+secrets:
+  enabled: false
+  mountAsFiles: true
+  items:
+    - key: secrets.json
+      path: credentials.json
+      file: secrets/dev.json
+
+# ========================================
+# Resource Limits (lighter for dev)
+# Smaller CPU/memory footprint for local environments
+# ========================================
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "250m"
+    memory: "256Mi"
+
+# ========================================
+# Probes Configuration
+# Readiness and liveness probes disabled to simplify local testing
+# ========================================
+probes:
+  readiness:
+    enabled: false
+  liveness:
+    enabled: false
+
+# ========================================
+# Common Labels
+# Adds identifying metadata for dev deployments
+# ========================================
+commonLabels:
+  environment: staging
+  team: backend
+  cost-center: engineering

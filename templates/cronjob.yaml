@@ -1,0 +1,33 @@
+{{- if .Values.cronjob.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "mychart.fullname" . }}-cronjob
+  labels:
+    {{- include "mychart.labels" . | nindent 4 }}
+spec:
+  schedule: "{{ .Values.cronjob.schedule }}"
+  successfulJobsHistoryLimit: {{ .Values.cronjob.successfulJobsHistoryLimit | default 3 }}
+  failedJobsHistoryLimit: {{ .Values.cronjob.failedJobsHistoryLimit | default 1 }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            {{- include "mychart.labels" . | nindent 12 }}
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: {{ .Chart.Name }}-cronjob
+              image: "{{ .Values.cronjob.image.repository }}:{{ .Values.cronjob.image.tag }}"
+              imagePullPolicy: {{ .Values.cronjob.image.pullPolicy | default "IfNotPresent" }}
+              command: {{ toYaml .Values.cronjob.command | nindent 14 }}
+              {{- if .Values.cronjob.env }}
+              env:
+                {{- toYaml .Values.cronjob.env | nindent 16 }}
+              {{- end }}
+              {{- if .Values.cronjob.resources }}
+              resources:
+                {{- toYaml .Values.cronjob.resources | nindent 16 }}
+              {{- end }}
+{{- end }}
