@@ -26,17 +26,4 @@ else
   echo "⚠️ No secrets directory found at $SECRET_DIR"
 fi
 
-# =======================================
-# 2️⃣ Encrypt Helm values files (values*.yaml)
-# =======================================
-for file in values*.yaml; do
-  [[ -f "$file" ]] || continue
-  if is_sops_encrypted "$file"; then
-    echo "⚪ Already encrypted: $file"
-  else
-    echo "🔐 Encrypting values file in place: $file"
-    sops --encrypt --in-place "$file"
-  fi
-done
-
 echo "✅ All plaintext files have been encrypted successfully."
