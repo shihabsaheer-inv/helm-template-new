@@ -27,7 +27,7 @@ service:
 # Disabled for dev — can be enabled when config files are needed
 # ========================================
 config:
-  enabled: false
+  enabled: true
   mountAsFiles: true
   items:
     - key: config.json
@@ -42,12 +42,12 @@ config:
 # Disabled for dev — avoids secret mounting during local testing
 # ========================================
 secrets:
-  enabled: false
+  enabled: true
   mountAsFiles: true
   items:
     - key: secrets.json
       path: credentials.json
-      file: secrets/dev.json
+      file: files/secrets/dev.json
 
 # ========================================
 # Resource Limits (lighter for dev)
@@ -79,3 +79,9 @@ commonLabels:
   environment: dev
   team: backend
   cost-center: engineering
+
+rollout:
+  enabled: false
+
+deployment:
+  enabled: true

@@ -7,31 +7,44 @@ metadata:
     {{- include "mychart.labels" . | nindent 4 }}
 data:
   {{- $env := .Values.global.environment | default "default" }}
-
-  {{- $jsonFile := printf "config/%s.json" $env }}
-  {{- if .Files.Get $jsonFile }}
-  config.json: |
-{{ .Files.Get $jsonFile | indent 4 }}
-  {{- else if .Files.Get "config/default.json" }}
-  config.json: |
-{{ .Files.Get "config/default.json" | indent 4 }}
+  {{- $configPath := "files/config/" }}
+  
+  {{- /* Iterate through all files in the config directory */ -}}
+  {{- range $path, $_ := .Files.Glob (printf "%s*" $configPath) }}
+    {{- $filename := base $path }}
+    {{- $content := $.Files.Get $path }}
+    {{- if $content }}
+      {{- /* Check if it's an environment-specific file matching current env */ -}}
+      {{- if or (hasPrefix $env $filename) (eq $filename "application.properties") (not (or (hasSuffix ".json" $filename) (hasSuffix ".yaml" $filename) (hasSuffix ".properties" $filename) | and (contains "-" $filename) (contains "." $filename))) }}
+  {{ $filename }}: |
+{{ $content | indent 4 }}
+      {{- end }}
+    {{- end }}
   {{- end }}
-
-  {{- $yamlFile := printf "config/%s.yaml" $env }}
-  {{- if .Files.Get $yamlFile }}
-  config.yaml: |
-{{ .Files.Get $yamlFile | indent 4 }}
-  {{- else if .Files.Get "config/default.yaml" }}
-  config.yaml: |
-{{ .Files.Get "config/default.yaml" | indent 4 }}
+  
+  {{- /* Fallback to default files if environment-specific ones don't exist */ -}}
+  {{- $envJsonFile := printf "%s%s.json" $configPath $env }}
+  {{- $envYamlFile := printf "%s%s.yaml" $configPath $env }}
+  {{- $envPropsFile := printf "%sapplication-%s.properties" $configPath $env }}
+  
+  {{- if not (.Files.Get $envJsonFile) }}
+    {{- if .Files.Get (printf "%sdefault.json" $configPath) }}
+  config.json: |
+{{ .Files.Get (printf "%sdefault.json" $configPath) | indent 4 }}
+    {{- end }}
   {{- end }}
-
-  {{- $propsFile := printf "config/application-%s.properties" $env }}
-  {{- if .Files.Get $propsFile }}
+  
+  {{- if not (.Files.Get $envYamlFile) }}
+    {{- if .Files.Get (printf "%sdefault.yaml" $configPath) }}
+  config.yaml: |
+{{ .Files.Get (printf "%sdefault.yaml" $configPath) | indent 4 }}
+    {{- end }}
+  {{- end }}
+  
+  {{- if not (.Files.Get $envPropsFile) }}
+    {{- if .Files.Get (printf "%sapplication.properties" $configPath) }}
   application.properties: |
-{{ .Files.Get $propsFile | indent 4 }}
-  {{- else if .Files.Get "config/application.properties" }}
-  application.properties: |
-{{ .Files.Get "config/application.properties" | indent 4 }}
+{{ .Files.Get (printf "%sapplication.properties" $configPath) | indent 4 }}
+    {{- end }}
   {{- end }}
 {{- end }}

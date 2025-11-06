@@ -116,9 +116,9 @@
     #     path: credentials.json
     
     # Traditional key-value pairs (used when mountAsFiles: false or as fallback)
-    data:
-      DB_PASSWORD: "ZGVmYXVsdC1wYXNzd29yZA=="
-      API_KEY: "ZGVmYXVsdC1hcGkta2V5"
+    #data:
+      #DB_PASSWORD: "ZGVmYXVsdC1wYXNzd29yZA=="
+      #API_KEY: "ZGVmYXVsdC1hcGkta2V5"
 
   # ========================================
   # CronJob Configuration
