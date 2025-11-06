@@ -5,6 +5,24 @@ creation_rules:
   - path_regex: files/secrets/.*\.(yaml|yml|json|env)$
     age:
       - age1t4pcys2s6n3m2xt0lgn0e2yetcdwazyxfd0mztrza8qssye4vqeswusptz
-    encrypted_regex: '^(data|stringData|password|token|key|secret|value)$'
+    # Encrypt any key containing sensitive words (nested or partial, case-insensitive)
+    encrypted_regex: '(?i)(data|stringData|.*password.*|.*token.*|.*secret.*|.*key.*|.*value.*|.*credential.*|.*auth.*)'
     encryption_method: 'aes256_gcm'
 
+  # ========================================
+  # Encrypt Helm values (values-dev.yaml, values-prod.yaml, etc.)
+  # ========================================
+  - path_regex: values.*\.(yaml|yml)$
+    age:
+      - age1t4pcys2s6n3m2xt0lgn0e2yetcdwazyxfd0mztrza8qssye4vqeswusptz
+    encrypted_regex: '(?i)(.*password.*|.*token.*|.*secret.*|.*key.*|.*credential.*|.*auth.*|^value$)'
+    encryption_method: 'aes256_gcm'
+
+  # ========================================
+  # Encrypt root-level .env files
+  # ========================================
+  - path_regex: .*\.env(\..*)?$
+    age:
+      - age1t4pcys2s6n3m2xt0lgn0e2yetcdwazyxfd0mztrza8qssye4vqeswusptz
+    encrypted_regex: '(?i)(.*password.*|.*token.*|.*secret.*|.*key.*|.*credential.*|.*auth.*)'
+    encryption_method: 'aes256_gcm'
