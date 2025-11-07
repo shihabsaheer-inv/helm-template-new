@@ -1,4 +1,4 @@
-# 🚀 Helm Template New
+# 🚀 Helm Template Standard
 
 A secure, reusable **Helm chart** for deploying containerized applications across multiple environments (`dev`, `staging`, `prod`) with built-in **SOPS-based secret encryption**, **pre-commit automation**, and **environment-specific overrides**.
 
