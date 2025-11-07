@@ -251,13 +251,6 @@ jobs:
           done
 ```
 
----
-
-## 🧾 Changelog
-See [CHANGELOG.md](CHANGELOG.md) for detailed release notes.
-
----
-
 ## 🧠 Troubleshooting
 
 | Error | Cause | Fix |
