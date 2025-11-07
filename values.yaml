@@ -1,212 +1,154 @@
-  # ========================================
-  # Global Configuration
-  # ========================================
-  global:
+# Global
+global:
     appName: myapp
-    environment: default
-
-  # ========================================
-  # Image Configuration
-  # ========================================
-  image:
+    environment: dev
+# Image
+image:
     repository: nginx
     tag: latest
     pullPolicy: IfNotPresent
-
-  # ========================================
-  # Replica Configuration
-  # ========================================
-  replicaCount: 1
-
-  # ========================================
-  # Deployment toggle
-  # ========================================
-  deployment:
+replicaCount: 1
+deployment:
     enabled: true
-
-  # ========================================
-  # Service Configuration
-  # ========================================
-  service:
+service:
     enabled: true
     type: ClusterIP
     port: 80
     targetPort: 80
-
-  # ========================================
-  # Ingress Configuration
-  # ========================================
-  ingress:
-    enabled: false
+ingress:
+    enabled: true
     className: nginx
     annotations: {}
     hosts:
-      - host: myapp.local
-        paths:
-          - path: /
-            pathType: Prefix
+        - host: myapp.local
+          paths:
+            - path: /
+              pathType: Prefix
     tls: []
-
-  # ========================================
-  # Horizontal Pod Autoscaler
-  # ========================================
-  autoscaling:
-    enabled: false
+autoscaling:
+    enabled: true
     minReplicas: 1
     maxReplicas: 5
     cpu:
-      enabled: true
-      targetPercentage: 80
+        enabled: true
+        targetPercentage: 80
     memory:
-      enabled: false
-      targetPercentage: 75
-
-  # ========================================
-  # Istio Configuration
-  # ========================================
-  istio:
-    enabled: false
+        enabled: false
+        targetPercentage: 75
+istio:
+    enabled: true
     gateway: my-gateway
     hosts:
-      - myapp.local
+        - myapp.local
     retries: 3
-
-  # ========================================
-  # Rollout Configuration (for Argo Rollouts)
-  # ========================================
-  rollout:
-    enabled: false
+rollout:
+    enabled: true
+    # `strategy` may be used by rollout template if needed
     strategy: Canary
-
-  # ========================================
-  # ConfigMap Configuration
-  # ========================================
-  config:
+# Config maps: dynamic driven from values
+config:
     enabled: true
-    # Mount as files (reads from config/{environment}.json|yaml|properties)
-    mountAsFiles: false
-    mountPath: "/etc/config"
-    # If mountAsFiles is true, you can specify which files to mount
-    items: []
-    # Example:
-    # items:
-    #   - key: config.json
-    #     path: app-config.json
-    #   - key: config.yaml
-    #     path: app-config.yaml
-    
-    # Traditional key-value pairs (used when mountAsFiles: false)
+    # Files (relative to files/config/)
+    files:
+        - name: application.properties
+          mountPath: /etc/app/application.properties
+        - name: dev.json
+          mountPath: /etc/config/dev.json
+        - name: dev1.yaml
+          mountPath: /etc/config/dev1.yaml
+    # Optional inline key/value fallback (creates a separate default configmap)
     data:
-      ENABLE_FEATURE_X: "true"
-      LOG_LEVEL: "info"
-
-  # ========================================
-  # Secrets Configuration
-  # ========================================
-  secrets:
+        ENABLE_FEATURE_X: "true"
+        LOG_LEVEL: info
+# Secrets: dynamic driven from values
+secrets:
     enabled: true
-    # Mount secrets as files (reads from secrets/{environment}.json)
-    mountAsFiles: true
-    mountPath: "/etc/secrets"
-    # If mountAsFiles is true, you can specify which files to mount
-    items: []
-    # Example:
-    # items:
-    #   - key: secrets.json
-    #     path: credentials.json
-    
-    # Traditional key-value pairs (used when mountAsFiles: false or as fallback)
+    # Files (relative to files/secrets/)
+    files:
+        - name: secrets.json
+          mountPath: /etc/secrets/secrets.json
+        - name: secrets1.json
+          mountPath: /etc/secrets/secrets1.json
+    # Optional inline secret key/values (will be base64-encoded in template)
     data:
-      DB_PASSWORD: "ZGVmYXVsdC1wYXNzd29yZA=="
-      API_KEY: "ZGVmYXVsdC1hcGkta2V5"
-
-  # ========================================
-  # CronJob Configuration
-  # ========================================
-  cronjob:
-    enabled: false
-    schedule: "0 * * * *"
+        DB_PASSWORD: ZGVmYXVsdC1wYXNzd29yZA==
+# CronJob
+cronjob:
+    enabled: true
+    schedule: 0 * * * *
     successfulJobsHistoryLimit: 3
     failedJobsHistoryLimit: 1
     image:
-      repository: busybox
-      tag: latest
-      pullPolicy: IfNotPresent
+        repository: busybox
+        tag: latest
+        pullPolicy: IfNotPresent
     command:
-      - /bin/sh
-      - -c
-      - "echo Hello from CronJob && date"
+        - /bin/sh
+        - -c
+        - echo "Hello from CronJob" && date
     env:
-      - name: ENVIRONMENT
-        value: "dev"
-      - name: LOG_LEVEL
-        value: "info"
+        - name: ENVIRONMENT
+          value: dev
+        - name: LOG_LEVEL
+          value: info
     resources:
-      requests:
-        cpu: "100m"
-        memory: "128Mi"
-      limits:
-        cpu: "200m"
-        memory: "256Mi"
-
-  # ========================================
-  # Resources (requests/limits)
-  # ========================================
-  resources:
+        requests:
+            cpu: 100m
+            memory: 128Mi
+        limits:
+            cpu: 200m
+            memory: 256Mi
+# Resources
+resources:
     requests:
-      cpu: "250m"
-      memory: "128Mi"
+        cpu: 250m
+        memory: 128Mi
     limits:
-      cpu: "500m"
-      memory: "256Mi"
-
-  # ========================================
-  # Probes (readiness / liveness)
-  # ========================================
-  probes:
+        cpu: 500m
+        memory: 256Mi
+# Probes
+probes:
     readiness:
-      enabled: true
-      path: /
-      initialDelaySeconds: 5
-      periodSeconds: 10
-      failureThreshold: 3
+        enabled: true
+        path: /
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        failureThreshold: 3
     liveness:
-      enabled: true
-      path: /
-      initialDelaySeconds: 10
-      periodSeconds: 15
-      failureThreshold: 3
-
-  # ========================================
-  # Additional Volumes and Mounts (legacy support)
-  # ========================================
-  volumes:
-    secrets:
-      enabled: false
-      name: secret-volume
-      mountPath: /mnt/secrets
-      secretName: ""
-    config:
-      enabled: true
-      name: config-volume
-      mountPath: /mnt/config
-      readOnly: true
-      configMapName: ""
-
-  # ========================================
-  # Common Labels (optional)
-  # ========================================
-  commonLabels: {}
-
-  # ========================================
-  # Name Overrides (optional)
-  # ========================================
-  nameOverride: ""
-  fullnameOverride: ""
-
-  # ========================================
-  # Service Account (optional)
-  # ========================================
-  serviceAccount:
+        enabled: true
+        path: /
+        initialDelaySeconds: 10
+        periodSeconds: 15
+        failureThreshold: 3
+# Environment variables (plain + encrypted-list)
+env:
+    - name: ENVIRONMENT
+      value: dev
+    - name: LOG_LEVEL
+      value: info
+ENCRYPTED_env:
+    - name: ENC[AES256_GCM,data:F3JvARrgDw==,iv:vd8jrHI1Bl/0Y4LukLZ+9hm77BxvrLObfyfZKgu1N+s=,tag:/YVB9kH1kGbeNN4v4qqeSQ==,type:str]
+      value: ENC[AES256_GCM,data:2SJzDc5qMV0=,iv:VFsFhBwNCQ3mreg/YIfyuL33P9IjC/YtqEiF26lBiL8=,tag:C0rI/mdDBTn9osoi2H2K1g==,type:str]
+    - name: ENC[AES256_GCM,data:39XSHomR1NEf,iv:yUcvWiERnp49krjgRJ0xLwiEIT2RsVfhhfuGIapnEck=,tag:HYi6fOyDUyB26ZZa7SQHbg==,type:str]
+      value: ENC[AES256_GCM,data:d8PtYMAFDPhGcuwPImQ=,iv:eKuuWbR/hW4x9qSl/CFy5NGYq6XPwW/FtpUbhy/+KsU=,tag:FTUsyZBdK8x5cUKQC98YoQ==,type:str]
+commonLabels: {}
+nameOverride: ""
+fullnameOverride: ""
+serviceAccount:
     create: false
     name: ""
+sops:
+    age:
+        - recipient: age1t4pcys2s6n3m2xt0lgn0e2yetcdwazyxfd0mztrza8qssye4vqeswusptz
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBpcFEwNGRxZlpDeGRkVkhH
+            T2dkenl6SzZvN2p1QW5uSVZpZ3paMHpHWHdzCkhERGVuN0FEM2xDNDg0ZmNDMjlw
+            aTBSTDNSczlUdnc3Z1hMV3hUZE5HM2MKLS0tIGdydXZ1ZGRyWm1paE83WGJ0bjJ3
+            ZTV4RzB1VFFhUHpsYWM5OG9acnhBd0UKFApEeShZzlLOw8PMJiJsxGHzCGgGUZ81
+            w/MY3IEcYHXksq/3bysaEmxVUxgoKfcjVmDO2YLDJIIsEg3P+dsg6g==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-11-07T10:10:35Z"
+    mac: ENC[AES256_GCM,data:voGkDcV8qHijWtAVtTSh0mUr3JRl0nB99yG9qkqatAfPLUpjp7z5HjzEDuNXHZEgOyvT1Ic/6E7IiHltBs3G/XVdY+DBUP9PcSLdxBLMxJbhTkJuwoe3gJ84J+EhqfJcqW0kFZgFe7Zpy9TMR8RgWizqMSbGr7kVif2g33KsPJs=,iv:GJeI2cLN6hUasB5K0se1DOlHIqdL3mhTQNhctZb5lhk=,tag:EJgzqnTvUhbScdVaSJWHZg==,type:str]
+    encrypted_regex: ^ENCRYPTED_
+    version: 3.11.0

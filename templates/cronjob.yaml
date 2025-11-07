@@ -18,7 +18,7 @@ spec:
         spec:
           restartPolicy: OnFailure
           containers:
-            - name: {{ .Chart.Name }}-cronjob
+            - name: {{ include "mychart.name" . }}-cronjob
               image: "{{ .Values.cronjob.image.repository }}:{{ .Values.cronjob.image.tag }}"
               imagePullPolicy: {{ .Values.cronjob.image.pullPolicy | default "IfNotPresent" }}
               command: {{ toYaml .Values.cronjob.command | nindent 14 }}

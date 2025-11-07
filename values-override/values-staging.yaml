@@ -1,0 +1,103 @@
+# ========================================
+# Development Environment Overrides
+# ========================================
+global:
+    environment: staging
+# ========================================
+# Image Configuration
+# Always pull the latest image for quick dev iterations
+# ========================================
+image:
+    repository: nginx
+    tag: latest
+    pullPolicy: Always
+# ========================================
+# Service Configuration
+# Use NodePort for easy local/external access in development
+# ========================================
+service:
+    type: NodePort
+    port: 80
+    targetPort: 80
+# ========================================
+# ConfigMap Configuration
+# Disabled for dev — can be enabled when config files are needed
+# ========================================
+config:
+    enabled: false
+    mountAsFiles: true
+    items:
+        - key: config.json
+          path: app-config.json
+        - key: config.yaml
+          path: app-config.yaml
+        - key: application.properties
+          path: application.properties
+# ========================================
+# Secrets Configuration
+# Disabled for dev — avoids secret mounting during local testing
+# ========================================
+secrets:
+    enabled: false
+    mountAsFiles: true
+    items:
+        - key: secrets.json
+          path: credentials.json
+          file: secrets/dev.json
+# ========================================
+# Resource Limits (lighter for dev)
+# Smaller CPU/memory footprint for local environments
+# ========================================
+resources:
+    requests:
+        cpu: 100m
+        memory: 128Mi
+    limits:
+        cpu: 250m
+        memory: 256Mi
+# ========================================
+# Probes Configuration
+# Readiness and liveness probes disabled to simplify local testing
+# ========================================
+probes:
+    readiness:
+        enabled: false
+    liveness:
+        enabled: false
+# ========================================
+# Common Labels
+# Adds identifying metadata for dev deployments
+# ========================================
+commonLabels:
+    environment: staging
+    team: backend
+    cost-center: engineering
+env:
+    - name: ENVIRONMENT
+      value: staging
+    - name: LOG_LEVEL
+      value: info
+    - name: RANDOM_API_KEY
+      value: random@staging
+ENCRYPTED_env:
+    - name: ENC[AES256_GCM,data:BBl+CmHbaw==,iv:Vkpdvoa4HFnBiWiea8Jyp2AnvrYji6ssjcnEQfhAUwQ=,tag:ay//vD4Hu7XapLR/ewjXpA==,type:str]
+      value: ENC[AES256_GCM,data:R+4HhZvoPrA=,iv:IBc3sB4VR0DOGgsDxqcpDW5Ac/c0jw0hZtwnhY6f0fg=,tag:7jn6vtI/tANiOpTjk/OFLw==,type:str]
+    - name: ENC[AES256_GCM,data:gov64rOM69dg,iv:cbeG5r6jU6V8K0WhUTX+XOqa5fxYEjAxZkgS1XD6dbo=,tag:jyW7T5Jdet3RmezROaGFiw==,type:str]
+      value: ENC[AES256_GCM,data:Kc8bJULTdNUqOC7bdJk=,iv:O+Q0unxpYyVbcFIKD0wfsTYZmrNk7CEwVjTFMcnIhnA=,tag:/aMOkdAQTJxYZCzmnpJGbw==,type:str]
+    - name: ENC[AES256_GCM,data:FngxG3j+KG2Rug==,iv:1VmIlUVU9IlmnmRjAr/3/Uq6AXU/ahbK/vOxQIKd6MA=,tag:Jrtu2cgGlYmNzFfXh9xOSw==,type:str]
+      value: ENC[AES256_GCM,data:GQcwSqJsU4MnNA==,iv:Xd36f8MnhKS+Ze3QqS7IM9VgMqV4TBbTuSWboH6dz0A=,tag:nJP8xVCS2R46CwUsDI6XxA==,type:str]
+sops:
+    age:
+        - recipient: age1t4pcys2s6n3m2xt0lgn0e2yetcdwazyxfd0mztrza8qssye4vqeswusptz
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA0Q2Z5TFJJcCtEdVpwQ3Rt
+            UWxjS0pNVzBVanFEbG9oYTA1bjZiaHZJeTNRCnUyNVdvbThwNm1IRitXcEd0bkgw
+            V29wVDRkUVMxYWU4K0lHcWdPeGxEbWMKLS0tIHk4OGt1S3ZHbGI5MzdadENQVkVO
+            YkNCWE9CYkIwSlI3TmdHaWRRMWhBRzAKq+B08Z2luLOGiOdgUg1CQy+8MkiXJCQa
+            iPxB12iEEmD6TmH81sdyRlJNe+n7mUjn0iSOo7S9vmUx2PWT+dikTA==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-11-07T08:52:28Z"
+    mac: ENC[AES256_GCM,data:gzTUT/KYCFCdY2IAY/Ov7ORjI1HF+tYraEtAhr4pf87KuBST4R0iuNOW4R0puWEj9pNpmpzj3T7tpgtE89iaCEdodLWsoCW1edKlQXFza9ld9qFjIA42j5eUCzNs7ExT/SSgOYzPl3IgpxJEwL1mIii3PXHEH4nSr8U/aqr53+o=,iv:VLS5H/Y82Ludo1r+GtLx2PmosyE6XrrCzMa1CIebHJo=,tag:OzaiCRr9PYpCsw6akMlLyw==,type:str]
+    encrypted_regex: ^ENCRYPTED_
+    version: 3.11.0

@@ -12,8 +12,9 @@ spec:
     name: {{ include "mychart.fullname" . }}{{ if .Values.rollout.enabled }}-rollout{{ end }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  {{- if or .Values.autoscaling.cpu.targetPercentage .Values.autoscaling.memory.targetPercentage }}
   metrics:
-    {{- if .Values.autoscaling.cpu.enabled }}
+    {{- if .Values.autoscaling.cpu.targetPercentage }}
     - type: Resource
       resource:
         name: cpu
@@ -21,7 +22,7 @@ spec:
           type: Utilization
           averageUtilization: {{ .Values.autoscaling.cpu.targetPercentage }}
     {{- end }}
-    {{- if .Values.autoscaling.memory.enabled }}
+    {{- if .Values.autoscaling.memory.targetPercentage }}
     - type: Resource
       resource:
         name: memory
@@ -29,4 +30,5 @@ spec:
           type: Utilization
           averageUtilization: {{ .Values.autoscaling.memory.targetPercentage }}
     {{- end }}
+  {{- end }}
 {{- end }}

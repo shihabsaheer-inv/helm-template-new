@@ -1,122 +1,111 @@
+{{- $root := . -}}
 {{- if .Values.deployment.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "mychart.fullname" . }}
+  name: {{ include "mychart.fullname" $root }}
   labels:
-    {{- include "mychart.labels" . | nindent 4 }}
+    {{- include "mychart.labels" $root | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ $root.Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "mychart.selectorLabels" . | nindent 6 }}
+      {{- include "mychart.selectorLabels" $root | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "mychart.selectorLabels" . | nindent 8 }}
+        {{- include "mychart.selectorLabels" $root | nindent 8 }}
     spec:
       containers:
-        - name: {{ include "mychart.name" . }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+        - name: {{ include "mychart.name" $root }}
+          image: "{{ $root.Values.image.repository }}:{{ $root.Values.image.tag }}"
+          imagePullPolicy: {{ $root.Values.image.pullPolicy }}
           ports:
-            - containerPort: {{ .Values.service.targetPort }}
+            - containerPort: {{ $root.Values.service.targetPort }}
 
-          {{- if .Values.resources }}
+          {{- if $root.Values.resources }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml $root.Values.resources | nindent 12 }}
           {{- end }}
 
-          {{- if and .Values.probes.readiness.enabled .Values.probes.readiness.path }}
+          # probes
+          {{- with $root.Values.probes.readiness }}
+          {{- if and .enabled .path }}
           readinessProbe:
             httpGet:
-              path: {{ .Values.probes.readiness.path }}
-              port: {{ .Values.service.targetPort }}
-            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
-            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
-            failureThreshold: {{ .Values.probes.readiness.failureThreshold }}
+              path: {{ .path }}
+              port: {{ $root.Values.service.targetPort }}
+            initialDelaySeconds: {{ .initialDelaySeconds }}
+            periodSeconds: {{ .periodSeconds }}
+            failureThreshold: {{ .failureThreshold }}
+          {{- end }}
           {{- end }}
 
-          {{- if and .Values.probes.liveness.enabled .Values.probes.liveness.path }}
+          {{- with $root.Values.probes.liveness }}
+          {{- if and .enabled .path }}
           livenessProbe:
             httpGet:
-              path: {{ .Values.probes.liveness.path }}
-              port: {{ .Values.service.targetPort }}
-            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
-            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
-            failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
+              path: {{ .path }}
+              port: {{ $root.Values.service.targetPort }}
+            initialDelaySeconds: {{ .initialDelaySeconds }}
+            periodSeconds: {{ .periodSeconds }}
+            failureThreshold: {{ .failureThreshold }}
+          {{- end }}
           {{- end }}
 
-          {{- if or (and .Values.config.enabled (not .Values.config.mountAsFiles)) (and .Values.secrets.enabled (not .Values.secrets.mountAsFiles)) }}
-          envFrom:
-            {{- if and .Values.config.enabled (not .Values.config.mountAsFiles) }}
-            - configMapRef:
-                name: {{ include "mychart.fullname" . }}-config
+          # env
+          {{- if or $root.Values.env $root.Values.ENCRYPTED_env }}
+          env:
+            {{- if $root.Values.env }}
+            {{- toYaml $root.Values.env | nindent 12 }}
             {{- end }}
-            {{- if and .Values.secrets.enabled (not .Values.secrets.mountAsFiles) }}
-            - secretRef:
-                name: {{ include "mychart.fullname" . }}-secret
+            {{- if $root.Values.ENCRYPTED_env }}
+            {{- toYaml $root.Values.ENCRYPTED_env | nindent 12 }}
             {{- end }}
           {{- end }}
 
+          {{- /* volumeMounts: only render when there are files */ -}}
+          {{- if or (and $root.Values.config.enabled $root.Values.config.files) (and $root.Values.secrets.enabled $root.Values.secrets.files) }}
           volumeMounts:
-            {{- if and .Values.config.enabled .Values.config.mountAsFiles }}
-            - name: config-volume
-              mountPath: {{ .Values.config.mountPath | default "/etc/config" }}
+            {{- if and $root.Values.config.enabled $root.Values.config.files }}
+            {{- range $file := $root.Values.config.files }}
+            {{- $san := regexReplaceAll "[^a-zA-Z0-9-]" $file.name "-" }}
+            - name: {{ printf "%s-%s-config-vol" (include "mychart.fullname" $root) $san | lower }}
+              mountPath: {{ $file.mountPath }}
+              subPath: {{ $file.name }}
               readOnly: true
             {{- end }}
-
-            {{- if and .Values.secrets.enabled .Values.secrets.mountAsFiles }}
-            - name: secrets-volume
-              mountPath: {{ .Values.secrets.mountPath | default "/etc/secrets" }}
-              readOnly: true
             {{- end }}
 
+            {{- if and $root.Values.secrets.enabled $root.Values.secrets.files }}
+            {{- range $file := $root.Values.secrets.files }}
+            {{- $san := regexReplaceAll "[^a-zA-Z0-9-]" $file.name "-" }}
+            - name: {{ printf "%s-%s-secret-vol" (include "mychart.fullname" $root) $san | lower }}
+              mountPath: {{ $file.mountPath }}
+              subPath: {{ $file.name }}
+              readOnly: true
+            {{- end }}
+            {{- end }}
+          {{- end }}
+      # volumes
+      {{- if or (and $root.Values.config.enabled $root.Values.config.files) (and $root.Values.secrets.enabled $root.Values.secrets.files) }}
       volumes:
-        {{- if and .Values.config.enabled .Values.config.mountAsFiles }}
-        - name: config-volume
+        {{- if and $root.Values.config.enabled $root.Values.config.files }}
+        {{- range $file := $root.Values.config.files }}
+        {{- $san := regexReplaceAll "[^a-zA-Z0-9-]" $file.name "-" }}
+        - name: {{ printf "%s-%s-config-vol" (include "mychart.fullname" $root) $san | lower }}
           configMap:
-            name: {{ include "mychart.fullname" . }}-config
-            items:
-              {{- $env := .Values.global.environment | default "default" }}
-              {{- $jsonFile := printf "config/%s.json" $env }}
-              {{- if .Files.Get $jsonFile }}
-              - key: config.json
-                path: config.json
-              {{- else if .Files.Get "config/default.json" }}
-              - key: config.json
-                path: config.json
-              {{- end }}
-
-              {{- $yamlFile := printf "config/%s.yaml" $env }}
-              {{- if .Files.Get $yamlFile }}
-              - key: config.yaml
-                path: config.yaml
-              {{- else if .Files.Get "config/default.yaml" }}
-              - key: config.yaml
-                path: config.yaml
-              {{- end }}
-
-              {{- $propsFile := printf "config/application-%s.properties" $env }}
-              {{- if .Files.Get $propsFile }}
-              - key: application.properties
-                path: application.properties
-              {{- else if .Files.Get "config/application.properties" }}
-              - key: application.properties
-                path: application.properties
-              {{- end }}
+            name: {{ printf "%s-%s" (include "mychart.fullname" $root) $san | lower }}
+        {{- end }}
         {{- end }}
 
-        {{- if and .Values.secrets.enabled .Values.secrets.mountAsFiles }}
-        - name: secrets-volume
+        {{- if and $root.Values.secrets.enabled $root.Values.secrets.files }}
+        {{- range $file := $root.Values.secrets.files }}
+        {{- $san := regexReplaceAll "[^a-zA-Z0-9-]" $file.name "-" }}
+        - name: {{ printf "%s-%s-secret-vol" (include "mychart.fullname" $root) $san | lower }}
           secret:
-            secretName: {{ include "mychart.fullname" . }}-secret
-            {{- if .Values.secrets.items }}
-            items:
-              {{- range .Values.secrets.items }}
-              - key: {{ .key }}
-                path: {{ .path }}
-              {{- end }}
-            {{- end }}
+            secretName: {{ printf "%s-%s" (include "mychart.fullname" $root) $san | lower }}
         {{- end }}
+        {{- end }}
+      {{- end }}
 {{- end }}

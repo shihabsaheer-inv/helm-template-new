@@ -1,37 +1,31 @@
+{{- $root := . -}}
 {{- if .Values.config.enabled }}
+{{- /* create per-file ConfigMaps */ -}}
+{{- range $file := $root.Values.config.files }}
+  {{- $fname := $file.name }}
+  {{- $san := regexReplaceAll "[^a-zA-Z0-9-]" $fname "-" }}
+  {{- $cmname := printf "%s-%s" (include "mychart.fullname" $root) $san | lower }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "mychart.fullname" . }}-config
+  name: {{ $cmname }}
   labels:
-    {{- include "mychart.labels" . | nindent 4 }}
+    {{- include "mychart.labels" $root | nindent 4 }}
 data:
-  {{- $env := .Values.global.environment | default "default" }}
+  {{ $fname }}: |
+{{ ( $root.Files.Get (printf "files/config/%s" $fname) ) | indent 4 }}
+---
+{{- end }}
 
-  {{- $jsonFile := printf "config/%s.json" $env }}
-  {{- if .Files.Get $jsonFile }}
-  config.json: |
-{{ .Files.Get $jsonFile | indent 4 }}
-  {{- else if .Files.Get "config/default.json" }}
-  config.json: |
-{{ .Files.Get "config/default.json" | indent 4 }}
-  {{- end }}
-
-  {{- $yamlFile := printf "config/%s.yaml" $env }}
-  {{- if .Files.Get $yamlFile }}
-  config.yaml: |
-{{ .Files.Get $yamlFile | indent 4 }}
-  {{- else if .Files.Get "config/default.yaml" }}
-  config.yaml: |
-{{ .Files.Get "config/default.yaml" | indent 4 }}
-  {{- end }}
-
-  {{- $propsFile := printf "config/application-%s.properties" $env }}
-  {{- if .Files.Get $propsFile }}
-  application.properties: |
-{{ .Files.Get $propsFile | indent 4 }}
-  {{- else if .Files.Get "config/application.properties" }}
-  application.properties: |
-{{ .Files.Get "config/application.properties" | indent 4 }}
-  {{- end }}
+{{- /* optional default inline data configmap */ -}}
+{{- if $root.Values.config.data }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mychart.fullname" $root }}-default
+  labels:
+    {{- include "mychart.labels" $root | nindent 4 }}
+data:
+{{ toYaml $root.Values.config.data | indent 2 }}
+{{- end }}
 {{- end }}
