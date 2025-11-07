@@ -275,11 +275,3 @@ See [CHANGELOG.md](CHANGELOG.md) for detailed release notes.
 4. Open a Pull Request 🎉
 
 ---
-
-## 🛡️ License
-This project is provided **as-is** under the MIT License.
-
----
-
-**Built with ❤️ by [Shihab Saheer](https://github.com/shihabsaheer-inv)**  
-> Secure, automated, and environment-aware Helm chart deployments.
