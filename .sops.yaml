@@ -1,28 +1,30 @@
 creation_rules:
   # ========================================
-  # Encrypt secret files under files/secrets/
+  # Encrypt ALL content in files/secrets/ (full file encryption)
   # ========================================
   - path_regex: files/secrets/.*\.(yaml|yml|json|env)$
     age:
       - age1t4pcys2s6n3m2xt0lgn0e2yetcdwazyxfd0mztrza8qssye4vqeswusptz
-    # Encrypt any key containing sensitive words (nested or partial, case-insensitive)
-    encrypted_regex: '(?i)(data|stringData|.*password.*|.*token.*|.*secret.*|.*key.*|.*value.*|.*credential.*|.*auth.*)'
+    # Encrypt everything in these files (no regex filter)
     encryption_method: 'aes256_gcm'
 
   # ========================================
   # Encrypt Helm values (values-dev.yaml, values-prod.yaml, etc.)
+  # Only encrypt keys starting with ENCRYPTED_
   # ========================================
   - path_regex: values.*\.(yaml|yml)$
     age:
       - age1t4pcys2s6n3m2xt0lgn0e2yetcdwazyxfd0mztrza8qssye4vqeswusptz
-    encrypted_regex: '(?i)(.*password.*|.*token.*|.*secret.*|.*key.*|.*credential.*|.*auth.*|^value$)'
+    # Only encrypt keys starting with ENCRYPTED_
+    encrypted_regex: '^ENCRYPTED_'
     encryption_method: 'aes256_gcm'
 
   # ========================================
-  # Encrypt root-level .env files
+  # Encrypt root-level .env files (all sensitive keys)
   # ========================================
   - path_regex: .*\.env(\..*)?$
     age:
       - age1t4pcys2s6n3m2xt0lgn0e2yetcdwazyxfd0mztrza8qssye4vqeswusptz
+    # Encrypt any key containing sensitive words
     encrypted_regex: '(?i)(.*password.*|.*token.*|.*secret.*|.*key.*|.*credential.*|.*auth.*)'
     encryption_method: 'aes256_gcm'

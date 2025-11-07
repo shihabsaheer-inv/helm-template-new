@@ -1,38 +1,22 @@
-# ========================================
-# Global Configuration
-# ========================================
+# Global
 global:
     appName: myapp
-    environment: default
-# ========================================
-# Image Configuration
-# ========================================
+    environment: dev
+# Image
 image:
     repository: nginx
     tag: latest
     pullPolicy: IfNotPresent
-# ========================================
-# Replica Configuration
-# ========================================
 replicaCount: 1
-# ========================================
-# Deployment toggle
-# ========================================
 deployment:
     enabled: true
-# ========================================
-# Service Configuration
-# ========================================
 service:
     enabled: true
     type: ClusterIP
     port: 80
     targetPort: 80
-# ========================================
-# Ingress Configuration
-# ========================================
 ingress:
-    enabled: false
+    enabled: true
     className: nginx
     annotations: {}
     hosts:
@@ -41,11 +25,8 @@ ingress:
             - path: /
               pathType: Prefix
     tls: []
-# ========================================
-# Horizontal Pod Autoscaler
-# ========================================
 autoscaling:
-    enabled: false
+    enabled: true
     minReplicas: 1
     maxReplicas: 5
     cpu:
@@ -54,64 +35,46 @@ autoscaling:
     memory:
         enabled: false
         targetPercentage: 75
-# ========================================
-# Istio Configuration
-# ========================================
 istio:
-    enabled: false
+    enabled: true
     gateway: my-gateway
     hosts:
         - myapp.local
     retries: 3
-# ========================================
-# Rollout Configuration (for Argo Rollouts)
-# ========================================
 rollout:
-    enabled: false
+    enabled: true
+    # `strategy` may be used by rollout template if needed
     strategy: Canary
-# ========================================
-# ConfigMap Configuration
-# ========================================
+# Config maps: dynamic driven from values
 config:
     enabled: true
-    # Mount as files (reads from config/{environment}.json|yaml|properties)
-    mountAsFiles: false
-    mountPath: /etc/config
-    # If mountAsFiles is true, you can specify which files to mount
-    items: []
-    # Example:
-    # items:
-    #   - key: config.json
-    #     path: app-config.json
-    #   - key: config.yaml
-    #     path: app-config.yaml
-    # Traditional key-value pairs (used when mountAsFiles: false)
+    # Files (relative to files/config/)
+    files:
+        - name: application.properties
+          mountPath: /etc/app/application.properties
+        - name: dev.json
+          mountPath: /etc/config/dev.json
+        - name: dev1.yaml
+          mountPath: /etc/config/dev1.yaml
+    # Optional inline key/value fallback (creates a separate default configmap)
     data:
         ENABLE_FEATURE_X: "true"
         LOG_LEVEL: info
-# ========================================
-# Secrets Configuration
-# ========================================
+# Secrets: dynamic driven from values
 secrets:
-    enabled: ENC[AES256_GCM,data:yxWFrQ==,iv:tvgnLxHU6mR/4hRVdD22NVEkLKc2RXFbXS2H8ymDpyw=,tag:MBhpnTNV9W8EjqTVH9JOgw==,type:bool]
-    #ENC[AES256_GCM,data:3fsFUULKw74Vz/8NDPLIFNgtO0UGVEnPgxxDW0fBb3UuAdCoPUI6W2HSuZFbRLLZLdSlfPpGR+2FoY2QGZHg,iv:BeviCathZ9Pgh8fS8PFUpE3Ma4wpKI1VbeIJM5A6xeA=,tag:ghGNKQO5U/3TDk6yMd1xDw==,type:comment]
-    mountAsFiles: ENC[AES256_GCM,data:IlLLjw==,iv:dhuaEwSj/ZU9HyVXQcGkw01S296G0gshkJDF4g+f9WM=,tag:fB0uie0fThs2JhbNNETuxw==,type:bool]
-    mountPath: ENC[AES256_GCM,data:D5ETc4/fG3rQHkpC,iv:SZydDqDy7queXAyY7b64eFCTkXKy8GNbg7phC4uEI4Y=,tag:8q2MsczHjttPlbjLfZFo8w==,type:str]
-    #ENC[AES256_GCM,data:K6cF1A60WKwwZnSNRjyU1ONCYugKoNYjDeBv3wJRJVTR0Ev5tDGouEvADuyu13ZSFaA6P8O6jMYsPSHhX94=,iv:hYEH7+o5m71ZEty/wrUdAaLx5MsNYYzJCGjGiaCWwUA=,tag:PdxBzlh+nAdQEwLACBb7Kw==,type:comment]
-    items: []
-    #ENC[AES256_GCM,data:JV/WoF//fOiW,iv:ODaYHURW1LD4CSvEoO6lFa7B7rTY/WMfN4DVjKhQibA=,tag:sj0ed8F3J01HPB2N9WDI8A==,type:comment]
-    #ENC[AES256_GCM,data:AmETTgF8qA==,iv:gzWDmOdhHU+iLl1R2CQtUIPQFtG4dlTRBQVbEz6AebU=,tag:kA+Pg15lpSoAYWK96WB7jg==,type:comment]
-    #ENC[AES256_GCM,data:ht3GIWlI/c1AzjiMNd+uSis8KfdH+g==,iv:QkcOyVJbHS1qGCag4zieGyaxxRLnki9evHWvwkZKxVI=,tag:LC8Wi3l4G2oUPCiQ5q142g==,type:comment]
-    #ENC[AES256_GCM,data:adzbfvXrFqHdy0k/ayIgQQ3rCuJseAh6zJwH,iv:R5UqRfAQGDK7AYEgs6ZgqjDwUkOAMxa04q8awPVy7mM=,tag:Yslud9mferFAo7zDRR4t4w==,type:comment]
-# Traditional key-value pairs (used when mountAsFiles: false or as fallback)
-#data:
-#DB_PASSWORD: "ZGVmYXVsdC1wYXNzd29yZA=="
-#API_KEY: "ZGVmYXVsdC1hcGkta2V5"
-# ========================================
-# CronJob Configuration
-# ========================================
+    enabled: true
+    # Files (relative to files/secrets/)
+    files:
+        - name: secrets.json
+          mountPath: /etc/secrets/secrets.json
+        - name: secrets1.json
+          mountPath: /etc/secrets/secrets1.json
+    # Optional inline secret key/values (will be base64-encoded in template)
+    data:
+        DB_PASSWORD: ZGVmYXVsdC1wYXNzd29yZA==
+# CronJob
 cronjob:
-    enabled: false
+    enabled: true
     schedule: 0 * * * *
     successfulJobsHistoryLimit: 3
     failedJobsHistoryLimit: 1
@@ -122,12 +85,12 @@ cronjob:
     command:
         - /bin/sh
         - -c
-        - echo Hello from CronJob && date
+        - echo "Hello from CronJob" && date
     env:
         - name: ENVIRONMENT
-          value: ENC[AES256_GCM,data:M0n3,iv:W1/s+rv8MbM2xzGq7F3ogk1eP5TD+GqneXBZepjwxaw=,tag:z/ujs7ejcenU5B9/z0X5aQ==,type:str]
+          value: dev
         - name: LOG_LEVEL
-          value: ENC[AES256_GCM,data:+L0e7g==,iv:eqhLLFlo8TFOkknC2r5+qImW9uzAZcNOxU5DSQSfiEc=,tag:2WEIkvRi4XJWZaPXAxHgXg==,type:str]
+          value: info
     resources:
         requests:
             cpu: 100m
@@ -135,9 +98,7 @@ cronjob:
         limits:
             cpu: 200m
             memory: 256Mi
-# ========================================
-# Resources (requests/limits)
-# ========================================
+# Resources
 resources:
     requests:
         cpu: 250m
@@ -145,9 +106,7 @@ resources:
     limits:
         cpu: 500m
         memory: 256Mi
-# ========================================
-# Probes (readiness / liveness)
-# ========================================
+# Probes
 probes:
     readiness:
         enabled: true
@@ -161,55 +120,35 @@ probes:
         initialDelaySeconds: 10
         periodSeconds: 15
         failureThreshold: 3
-# ========================================
-# Additional Volumes and Mounts (legacy support)
-# ========================================
-volumes:
-    secrets:
-        enabled: ENC[AES256_GCM,data:I978mXU=,iv:6d7RgwSxvO09m/kzeY3ag/ZD6GODoCNzCEEXftHMfco=,tag:w4rA+pl6DGSyRHjZqlUKOw==,type:bool]
-        name: ENC[AES256_GCM,data:+RQzTLLEMmwO0fKwiQ==,iv:ufCFMStDvb/frNQ5bQvILtGITHCvcjHJifYXf0ORyZo=,tag:iA643emM4+t0Uj5eoHKDrg==,type:str]
-        mountPath: ENC[AES256_GCM,data:pktxdzlgSwfuOJuw,iv:FR1LmGgRKVKJEfTQ+i6dse1DQsGvvnEL4eGZtpblxU0=,tag:gH3J+UGbT4GDBxQ1nyMJCQ==,type:str]
-        secretName: ""
-    config:
-        enabled: true
-        name: config-volume
-        mountPath: /mnt/config
-        readOnly: true
-        configMapName: ""
-# ========================================
-# Common Labels (optional)
-# ========================================
+# Environment variables (plain + encrypted-list)
+env:
+    - name: ENVIRONMENT
+      value: dev
+    - name: LOG_LEVEL
+      value: info
+ENCRYPTED_env:
+    - name: ENC[AES256_GCM,data:xRObYgqkBQ==,iv:5xxr+tjZE1lT+kU4a4U0hiXv6KBKrm9SThWtbRlK58o=,tag:DW8OL3sIvvNQZbcG0j6dnA==,type:str]
+      value: ENC[AES256_GCM,data:nbco/5W+Nvw=,iv:20xTU0FfPNODpx2bbGOVJi2glSUiM31UAkdCWEsJAYw=,tag:0K5YMl2gurKtgT/bujXdkg==,type:str]
+    - name: ENC[AES256_GCM,data:OxjFNMEu9uVa,iv:nQHGPtO5IM9kqXTb03IW9QeXKyhFVZcgsvx0JBOzVcU=,tag:FJAPTzQq1pDWdwCLM+VOEg==,type:str]
+      value: ENC[AES256_GCM,data:DnIaTdS/69h5DetF9DE=,iv:9WQ19X0PhCljTiFN7KYCmecRNr/i7GM/pT23+GsvxhA=,tag:PC9xiWQeDVKejGWs5tzQeA==,type:str]
 commonLabels: {}
-# ========================================
-# Name Overrides (optional)
-# ========================================
 nameOverride: ""
 fullnameOverride: ""
-# ========================================
-# Service Account (optional)
-# ========================================
 serviceAccount:
     create: false
     name: ""
-env:
-    - name: ENVIRONMENT
-      value: ENC[AES256_GCM,data:d4jEmDOcMg==,iv:0LCfvEvrFN3TYZYeNbnzke/vWtkevnqHtOU6S+7prJg=,tag:C3uPvjSHzeS32ukY2YQq2A==,type:str]
-    - name: LOG_LEVEL
-      value: ENC[AES256_GCM,data:8csnvQ==,iv:GNXO0/xbKefYEf+g8hEnD/ZTQV3Mq5dmJX8hH58IHAo=,tag:m68rGTaBegbjs0k6JMOq7Q==,type:str]
-    - name: DB_PASSWORD
-      value: ENC[AES256_GCM,data:/7g4nv1SOPkWKGg=,iv:JPJqnFUDOgbxpEGPM/CAk5cnnR4YZxk8zUeGsbHuwJU=,tag:oKWc9mRRjnTQr1EzI8W4bg==,type:str]
 sops:
     age:
         - recipient: age1t4pcys2s6n3m2xt0lgn0e2yetcdwazyxfd0mztrza8qssye4vqeswusptz
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBXazVIRW43VGxFSzRBWW5p
-            QXZ3QmF0NGtOaTdERE53dUNsNTJYblV3WGdZCkkvY1dCYlIzK1dtZGtFd0xha2lZ
-            TXh6L2MvZi9CaFJXTmlKNVhGMW1GNzQKLS0tIDZURWJUUEVaVHRXc1hQWm5FZlV6
-            dXpMRHQweDhxWitFOUlVYjJXQkptRUkKhjOWGvVzdvLVj1pqTww/He5IPVHqsJzC
-            uHbLh7Cdj8bb5j0uVUu8KLSjGiDEJ96PsnSYtyWv4c9Ymt6VTdmwuw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBuUGo0RGJaWUNRdFgwNzY1
+            VW5hMzZTRStKV0lpWEtMNUVIMHplQTB6UkZBCnFFeER6azZKWWFaTHJMckExQkYr
+            VlJKSTZiSU5oaXppZ3BNVEZ6aXlRdDQKLS0tIEIzeDQrcE5DdzBuRkJDTHkxc2Nq
+            ZW45TlRQbTFVaGtWYXhIUklubzh1MlkKICaAXlcwmgyBK4Kyz/h9Z4crzXtSSIkV
+            77ds8nDBowhdq2BHsMzHF2RudCqBeKmcKd6chIBmpse7tXYvJPau3Q==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-11-06T09:14:46Z"
-    mac: ENC[AES256_GCM,data:NXyZikXYXOPO2CvKQI6CeGfTc0RK7SXzd4fT4vzwBLv7wN4/IugdXrOFsbpD+woEXX+0MEEf29tf3HCF9s9D23O3fhOfMiT4SGNLI6HRjMXeQF+XLLC1jLp5vQlfZWIwM7nYs/1O2Z4+jgy4q2RW6mqs901OqOO8Ugp75Fzs5Kg=,iv:0TM6Oth9oxAdaE9Pevs3RuBR9Tt2fsCVRJZ/sIWSwEs=,tag:3CDzBsNMrtR41tQtexik4w==,type:str]
-    encrypted_regex: (?i)(.*password.*|.*token.*|.*secret.*|.*key.*|.*credential.*|.*auth.*|^value$)
+    lastmodified: "2025-11-07T08:52:28Z"
+    mac: ENC[AES256_GCM,data:HWLlBrPayND+GNvTWeZD0eklhqZpHie2foPOl4d7eMwzW7XUe5WIz/+S6PpmiG36eCbBYMyYhlW1pHXCHl9Q+SENyZvRAvShTY7HHFWVdPy8xJeoqKI49AZ+UQhO6oo2SvH4+0zG3b16K2+GyVrcgpQcBY8cjJg/xETQQB+csJE=,iv:C+8qXhG3Ztcng19GJ49wK8UIFuW+JXX0LpePpriCxlk=,tag:K20V/jAwfhB/ka4mHQViZw==,type:str]
+    encrypted_regex: ^ENCRYPTED_
     version: 3.11.0

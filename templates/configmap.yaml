@@ -1,50 +1,31 @@
+{{- $root := . -}}
 {{- if .Values.config.enabled }}
+{{- /* create per-file ConfigMaps */ -}}
+{{- range $file := $root.Values.config.files }}
+  {{- $fname := $file.name }}
+  {{- $san := regexReplaceAll "[^a-zA-Z0-9-]" $fname "-" }}
+  {{- $cmname := printf "%s-%s" (include "mychart.fullname" $root) $san | lower }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "mychart.fullname" . }}-config
+  name: {{ $cmname }}
   labels:
-    {{- include "mychart.labels" . | nindent 4 }}
+    {{- include "mychart.labels" $root | nindent 4 }}
 data:
-  {{- $env := .Values.global.environment | default "default" }}
-  {{- $configPath := "files/config/" }}
-  
-  {{- /* Iterate through all files in the config directory */ -}}
-  {{- range $path, $_ := .Files.Glob (printf "%s*" $configPath) }}
-    {{- $filename := base $path }}
-    {{- $content := $.Files.Get $path }}
-    {{- if $content }}
-      {{- /* Check if it's an environment-specific file matching current env */ -}}
-      {{- if or (hasPrefix $env $filename) (eq $filename "application.properties") (not (or (hasSuffix ".json" $filename) (hasSuffix ".yaml" $filename) (hasSuffix ".properties" $filename) | and (contains "-" $filename) (contains "." $filename))) }}
-  {{ $filename }}: |
-{{ $content | indent 4 }}
-      {{- end }}
-    {{- end }}
-  {{- end }}
-  
-  {{- /* Fallback to default files if environment-specific ones don't exist */ -}}
-  {{- $envJsonFile := printf "%s%s.json" $configPath $env }}
-  {{- $envYamlFile := printf "%s%s.yaml" $configPath $env }}
-  {{- $envPropsFile := printf "%sapplication-%s.properties" $configPath $env }}
-  
-  {{- if not (.Files.Get $envJsonFile) }}
-    {{- if .Files.Get (printf "%sdefault.json" $configPath) }}
-  config.json: |
-{{ .Files.Get (printf "%sdefault.json" $configPath) | indent 4 }}
-    {{- end }}
-  {{- end }}
-  
-  {{- if not (.Files.Get $envYamlFile) }}
-    {{- if .Files.Get (printf "%sdefault.yaml" $configPath) }}
-  config.yaml: |
-{{ .Files.Get (printf "%sdefault.yaml" $configPath) | indent 4 }}
-    {{- end }}
-  {{- end }}
-  
-  {{- if not (.Files.Get $envPropsFile) }}
-    {{- if .Files.Get (printf "%sapplication.properties" $configPath) }}
-  application.properties: |
-{{ .Files.Get (printf "%sapplication.properties" $configPath) | indent 4 }}
-    {{- end }}
-  {{- end }}
+  {{ $fname }}: |
+{{ ( $root.Files.Get (printf "files/config/%s" $fname) ) | indent 4 }}
+---
+{{- end }}
+
+{{- /* optional default inline data configmap */ -}}
+{{- if $root.Values.config.data }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mychart.fullname" $root }}-default
+  labels:
+    {{- include "mychart.labels" $root | nindent 4 }}
+data:
+{{ toYaml $root.Values.config.data | indent 2 }}
+{{- end }}
 {{- end }}

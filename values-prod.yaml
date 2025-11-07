@@ -27,23 +27,23 @@ config:
     enabled: false
     mountAsFiles: true
     items:
-        - key: ENC[AES256_GCM,data:37fUYyeAgxZ4r3Y=,iv:PkuMpLzQL7Z5pWTHwuWCAXpulLHff63VYNzpQId0/F0=,tag:tS591UcXx9+RY8kF+gPCEA==,type:str]
+        - key: config.json
           path: app-config.json
-        - key: ENC[AES256_GCM,data:eLavwGdEj0d9jpg=,iv:gFZMjuvKK1Nkvp19op99rpxvt9sMguflLk1mC3GkcWk=,tag:dETzhdY2+0gwgzh37P1Fbg==,type:str]
+        - key: config.yaml
           path: app-config.yaml
-        - key: ENC[AES256_GCM,data:gMHRiFjRf5mcFVmi5M/VrujddHZRpg==,iv:WnwlJulVWWlidhbCaAUMU7GOLysVx7N9MZwz3kwDIsE=,tag:BjxnVNWDjc/ZPQVo8d4VWg==,type:str]
+        - key: application.properties
           path: application.properties
 # ========================================
 # Secrets Configuration
 # Disabled for dev — avoids secret mounting during local testing
 # ========================================
 secrets:
-    enabled: ENC[AES256_GCM,data:ucl8Fyc=,iv:sM+n41ULRLxXVTpektmJcLI9HxR9EDFsB9cgZ5fn+7A=,tag:Z+WLPb8oh7IGUURGrPaXOg==,type:bool]
-    mountAsFiles: ENC[AES256_GCM,data:LOzIlQ==,iv:iWvHEWmmcnp2CTZdrR34Un7PzXJdZYt9IbGbHi39C/8=,tag:NUInuNkEbnPg5awGxgVjPA==,type:bool]
+    enabled: false
+    mountAsFiles: true
     items:
-        - key: ENC[AES256_GCM,data:A01bf/4aU8CU1iVr,iv:qKegD7JiN1McNIT64EIvwgO6jrhfnzNu80yxxn0WcLY=,tag:mCMftiJDc1O8z4H6AhzCeQ==,type:str]
-          path: ENC[AES256_GCM,data:0DD2cGXNB0HLKyu8FP6GTA==,iv:0vZZl21IGxIVVZtJuwJWuakpcqlM0gT600/yQ5c84rA=,tag:lvGApzNtVazDPz6LpPxFcA==,type:str]
-          file: ENC[AES256_GCM,data:laO2xfY2Lcx/nSMoiD6+uQ==,iv:i6ez19Mqp8zzeEixWu2SQEs+iUSgTm7k46bS4hcLi0Y=,tag:3zOhgUxKzrUnmdzZ6YGT5g==,type:str]
+        - key: secrets.json
+          path: credentials.json
+          file: secrets/dev.json
 # ========================================
 # Resource Limits (lighter for dev)
 # Smaller CPU/memory footprint for local environments
@@ -74,23 +74,30 @@ commonLabels:
     cost-center: engineering
 env:
     - name: ENVIRONMENT
-      value: ENC[AES256_GCM,data:kBRTrg==,iv:LxbNHFzuJfof46ceibf2YwMXSxSBHwZr3/IaRyhrerM=,tag:0/wRw/dDKKc1AWarMLon4g==,type:str]
+      value: prod
     - name: LOG_LEVEL
-      value: ENC[AES256_GCM,data:e9jN8g==,iv:wSiiXFMGUJi65VlctUj5KZaXH+1kVfehCYvCnLKYXSI=,tag:3DOldrStGfv4Ry6o+8R1wA==,type:str]
-    - name: DB_PASSWORD
-      value: ENC[AES256_GCM,data:Weum9c8TA8Y=,iv:T8qYlPlxwhDhp0onw9yWmhWtH2COub8nBEbtZYVWjUk=,tag:h0XFWwm5NfSq8MzMm+94rA==,type:str]
+      value: info
+    - name: RANDOM_API_KEY
+      value: random@prod
+ENCRYPTED_env:
+    - name: ENC[AES256_GCM,data:+Znbj9l8gQ==,iv:TB4KhECeag5u97NcBmcqEwMhNmczzCM0vJ8yQXLWSvo=,tag:MvBnw9K+G5UKuCUKv9Sowg==,type:str]
+      value: ENC[AES256_GCM,data:7Es3LaNZOrQ=,iv:D4RMHNgsLzhiZovW+O+Byw41QVG2Ml49by9md3RBRkY=,tag:diI2H+zUH3fCN64AIcKesA==,type:str]
+    - name: ENC[AES256_GCM,data:SaZxHoYlMAwa,iv:pYp77paiUHJ9or6DuG09V1UZjAYFW32B/3YqejTuE2g=,tag:scmjKSB2qDQwK0JAuVVKKg==,type:str]
+      value: ENC[AES256_GCM,data:K5XDqGbhQzqINaI5fcs=,iv:HZSFZaizfHSWN3SxKPwxopWu8CsqrJYuJj1Alf3Hyck=,tag:Nx66BW9ccUciR4axmioDIw==,type:str]
+    - name: ENC[AES256_GCM,data:PbCzUcpsOgey7A==,iv:DeST4dVj0RDxh/7XThMqzJI0LYPVLyti0OYYkGPrnzM=,tag:fH7/5sXRxjYlhzu1to6nMQ==,type:str]
+      value: ENC[AES256_GCM,data:R5vRZo+ukRNG2A==,iv:+5BxtUqI0bKLZ3wLrs/vCj540YJrrPrfG3Tc0l2R0QE=,tag:mx9BEhOAav34Ib7QJ7KKDw==,type:str]
 sops:
     age:
         - recipient: age1t4pcys2s6n3m2xt0lgn0e2yetcdwazyxfd0mztrza8qssye4vqeswusptz
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBSS09xK0tDMWJMUXVWamh0
-            SWR4ZXpKWjEveFBiSXhYKytwVUFoeXpieW1zCmxOdXVHcGw5SzU0T2oweEpsQWFN
-            Y0pSUTNDR0hrTHVGc1NLZTgxZGlaZGcKLS0tIEhDWVR2MWU5Ky9OR2cvSmpyYUJX
-            ZzRLU1lrQTcwTzRPM1dFczZtTUJrYVkKy0m2O6jsmEZfseOmnaSyKwPel7qaGejN
-            wUad5XqlbHbnYK3TSAVZAdpNIBCnGbBGZQcyzlN3qM+c9x2YOgFYdg==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSByT1EzbFEzR2tGRVpuMjh5
+            QStXL0loQmVsNUJ0a3UxZFd0OXdrRDdJNGhnCmpkTXU3NEZWaVZkWUZoWjhvR0NF
+            OVJYR3VGTm9OUWZrSWp3ejh5Z0NTd2sKLS0tIHpJbmJuNVlsUmdLKzdFa3RyZ2FE
+            a1ZqZGZWNlBpNzFYK0JVckVjWU1pTDgK0DQkmdlTSQsliDwVBGYofgFXHRZmJVbL
+            h8bpDTygL85m4M/0TL4GVzlC1/vG68s8FdDoIBlOnSC+9C6YROrQpg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-11-06T09:14:46Z"
-    mac: ENC[AES256_GCM,data:Dt+c6QOCx5+rjbRUjGb+3nGpPUaRWRVK4GqEu4IoHrUUwd7+UMRxkC5DYehHASh04j44LJz1/fXUGGqjI5DVV/4NL0MIZ0c6MS2ZJttMOGs9oP3773wQvubbvcf+8TJENai68TfP0AZ69+TWEtBZlGtWorlTNnnbTlpTYWpj58E=,iv:J1g8ggDIjbwvkjJkBmi+dk8pd1IVJh+a5LgLG88xxgQ=,tag:KKNVcm7HenkTVRSqspF1eQ==,type:str]
-    encrypted_regex: (?i)(.*password.*|.*token.*|.*secret.*|.*key.*|.*credential.*|.*auth.*|^value$)
+    lastmodified: "2025-11-07T08:52:28Z"
+    mac: ENC[AES256_GCM,data:iSKv6ri7Qxx/LRu1JxXBhBjCihY/ncU39W90KJtUrEdbQyhU8gMQP9C95+d8D9nEuVxTAEDgQCoLeSq7LYWP5UNSIwVzcE4uo05gYmgyrUxqlDFMKNMl2hZClk27DbFYg9gxTAtXQj/6Vc8nH6OthKAveBWdsVDOYZuywg101b4=,iv:q7nRjDvkhWFExJixlXXWhzExc49EbRxbVNQ1egc1Jdk=,tag:zfHa6RtomhqDx6OFeXxqkw==,type:str]
+    encrypted_regex: ^ENCRYPTED_
     version: 3.11.0
