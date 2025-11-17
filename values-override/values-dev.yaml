@@ -86,9 +86,24 @@ env:
     - name: TEST_APP
       value: newapp
 ENCRYPTED_env:
-    - name: API_KEY
-      value: testpass
-    - name: DB_SECRET
-      value: supersecret123
-    - name: AUTH_TOKEN
-      value: mytoken456
+    - name: ENC[AES256_GCM,data:Ffuz/2mlvw==,iv:w/RIW5HYRskjilcjbRWn2OFESwnislOfVP/xEyrZhSQ=,tag:m6NNUAckgz25jl69sX5h+Q==,type:str]
+      value: ENC[AES256_GCM,data:SLra3Urezh8=,iv:Yc2s1hDj/wO82LUKc06IrHlBH21XaMqy76NeFv/JKm8=,tag:nbrtOu+xDJz/3h69tJsoNQ==,type:str]
+    - name: ENC[AES256_GCM,data:iPOhjtiCjn7D,iv:JJ6HRGEBUZwv4Kgqrk93Wx8HqaGxffjKJzMZHVm9IBw=,tag:ns/gsbdgApbHBbL8xcPwqA==,type:str]
+      value: ENC[AES256_GCM,data:6y8AdfkObrw2llNhndE=,iv:IaJkfhSwaScCIfzEOvgpQlOiZ3mUHwf8/vH/ik3TbRA=,tag:HmznQ6u25KX9hOyvrdnhgg==,type:str]
+    - name: ENC[AES256_GCM,data:++rNYJAaOkATWQ==,iv:s1A5WYbybb/loqXKYVpgUbzZhFYNc1RenuJoZ5RbMt0=,tag:ON4//ihNxE+BjLvHoYlXsg==,type:str]
+      value: ENC[AES256_GCM,data:O9wJ0Mv8zs9Axw==,iv:hroiOXWI3+R3UPEJaEJqn+lo8Qio+AMrc0to+Lyv5P4=,tag:oL7109WIbseBbtn1rTSXqg==,type:str]
+sops:
+    age:
+        - recipient: age1t4pcys2s6n3m2xt0lgn0e2yetcdwazyxfd0mztrza8qssye4vqeswusptz
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAvMU5hRmx4RFU4blNOZjlK
+            TE5rajd6MTZ2L3lmcDFTQ05VWGhmRTJsWnhBCndENVJOMUlUOTk4WjBjQXFlcVdu
+            US9sQWZUdC93bHZOME41WE12M2g1L2MKLS0tIDlvSy9TZTJIODBLT2k3RjRsa0xx
+            TVNGQXF4N1dIbVpjN1pJMU0vYUlMY1EKWeh8QG05sefmmUL9OyWv38srtvGlZ6k4
+            +bXDcHhqxlfT96XsRUwT2GVzRd6iRxpVbDBN1UdTwinGnYs1BB6y7w==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-11-17T10:08:16Z"
+    mac: ENC[AES256_GCM,data:1uNy0gnzoLmbBxvkBNhj+nHlVSIKQiKjUFJYgIppSyIOYqNFjmz9uS5W2AhteqsVaZGSP3zLu4WgkG6DEyZbczsLKG0UZ1/em5n6oS/u3X6AcvtfISDR8v6DQTfSKiu4FBeCDOtrGlq0Z5GAhkk+mIXSbgWwRIEe4GBW8wvmS5c=,iv:IhjKbMNQ9AZwOSr1R8d+9v8GKFe+w8vnykGJfIXoWDc=,tag:ufkrZRD59HUMIeExZz8JsQ==,type:str]
+    encrypted_regex: ^ENCRYPTED_
+    version: 3.11.0
