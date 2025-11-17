@@ -26,7 +26,7 @@ ingress:
               pathType: Prefix
     tls: []
 autoscaling:
-    enabled: true
+    enabled: false
     minReplicas: 1
     maxReplicas: 5
     cpu:
@@ -36,7 +36,7 @@ autoscaling:
         enabled: false
         targetPercentage: 75
 istio:
-    enabled: true
+    enabled: false
     gateway: my-gateway
     hosts:
         - myapp.local
@@ -74,7 +74,7 @@ secrets:
         DB_PASSWORD: ZGVmYXVsdC1wYXNzd29yZA==
 # CronJob
 cronjob:
-    enabled: true
+    enabled: false
     schedule: 0 * * * *
     successfulJobsHistoryLimit: 3
     failedJobsHistoryLimit: 1

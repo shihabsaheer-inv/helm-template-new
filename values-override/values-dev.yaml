@@ -8,7 +8,7 @@ global:
 # Always pull the latest image for quick dev iterations
 # ========================================
 image:
-    repository: nginx
+    repository: milleniaprophet/appstore
     tag: latest
     pullPolicy: Always
 # ========================================
@@ -16,7 +16,7 @@ image:
 # Use NodePort for easy local/external access in development
 # ========================================
 service:
-    type: NodePort
+    type: LoadBalancer
     port: 80
     targetPort: 80
 # ========================================
@@ -24,7 +24,7 @@ service:
 # Disabled for dev — can be enabled when config files are needed
 # ========================================
 config:
-    enabled: true
+    enabled: false
     mountAsFiles: true
     items:
         - key: config.json
@@ -38,7 +38,7 @@ config:
 # Disabled for dev — avoids secret mounting during local testing
 # ========================================
 secrets:
-    enabled: true
+    enabled: false
     mountAsFiles: true
     items:
         - key: secrets.json
