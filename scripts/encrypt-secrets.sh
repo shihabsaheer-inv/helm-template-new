@@ -53,7 +53,7 @@ fi
 # =======================================
 # 2️⃣ Encrypt Helm values files (only ENCRYPTED_ prefix)
 # =======================================
-for file in values*.yaml; do
+for file in values-override/*.yaml; do
   [[ -f "$file" ]] || continue
   if is_sops_encrypted "$file"; then
     echo "⚪ Already encrypted: $file"
