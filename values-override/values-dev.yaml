@@ -8,7 +8,7 @@ global:
 # Always pull the latest image for quick dev iterations
 # ========================================
 image:
-    repository: milleniaprophet/nginx-backend
+    repository: nginx
     pullPolicy: Always
 # ========================================
 # Service Configuration
