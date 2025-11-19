@@ -164,22 +164,22 @@ When you `git commit`, it:
 
 ### 🧱 Development
 ```bash
-helm upgrade --install my-app ./   --values values.yaml   --values values-override/values-dev.yaml
+helm upgrade --install my-app ./  --values values-override/values-dev.yaml
 ```
 
 ### 🧪 Staging
 ```bash
-helm upgrade --install my-app ./   --values values.yaml   --values values-override/values-staging.yaml
+helm upgrade --install my-app ./  --values values-override/values-staging.yaml
 ```
 
 ### 🏭 Production
 ```bash
-helm upgrade --install my-app ./   --values values.yaml   --values values-override/values-prod.yaml
+helm upgrade --install my-app ./  --values values-override/values-prod.yaml
 ```
 
 ### 🧩 Preview manifests
 ```bash
-helm template my-app ./   --values values.yaml   --values values-override/values-dev.yaml
+helm template my-app ./  --values values-override/values-dev.yaml
 ```
 
 ---
@@ -251,7 +251,7 @@ jobs:
           done
 ```
 
-### SOPS Key
+### 🔐 SOPS Key
 Please access the link view the key: https://drive.google.com/file/d/1LQOZRx0jc0AGzPCRJXiAVRnP7h4KxTMO/view?usp=sharing
 
 ## 🧠 Troubleshooting
