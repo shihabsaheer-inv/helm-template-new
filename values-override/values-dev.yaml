@@ -8,7 +8,7 @@ global:
 # Always pull the latest image for quick dev iterations
 # ========================================
 image:
-    repository: milleniaprophet/nginx-frontend
+    repository: milleniaprophet/nginx-backend
     pullPolicy: Always
 # ========================================
 # Service Configuration
@@ -85,24 +85,24 @@ env:
     - name: TEST_APP
       value: newapp
 ENCRYPTED_env:
-    - name: ENC[AES256_GCM,data:XYHTPpb+GQ==,iv:PSNMFJO/gOsn0uteHfkHqyoLJ7cPMPr953rVg8Htr44=,tag:wDTX9uXLwbWoSxs0os/lrg==,type:str]
-      value: ENC[AES256_GCM,data:iHCy78XRYnM=,iv:63mk6kQQ0xdgqCk8zwwVZp7J0VC+42Js3EPOI1h8ae8=,tag:dylxSzzhCAmFlHkmxHsKxw==,type:str]
-    - name: ENC[AES256_GCM,data:T7LgwYLFnseX,iv:z4sBKKQNFfuh/6kVCt95A3sRrL4E0NH4nFRt/Yh2AeM=,tag:+CYEeERNSZCMIRH2gr38jQ==,type:str]
-      value: ENC[AES256_GCM,data:BeWfJFJlCtnsHB6RN8g=,iv:3esnhjH0CNbhVTjhmsHlrUkTGbvY2r8jH7nzGo6rjhA=,tag:Pr0DpdBbeYNmzdMBrlmh5g==,type:str]
-    - name: ENC[AES256_GCM,data:SvTfaNfX84B5QA==,iv:EuoPGfHKJZDmlUSw+LSoAL7GDx7qJbmgsFuxfINuUe8=,tag:VppDIJMTlm7jqu2yI+kTEg==,type:str]
-      value: ENC[AES256_GCM,data:uVIylzMTcA5e7Q==,iv:PiW/nDj/oE1mFIdIAT417Z9Yoy2E6Pg+wyTr0BOG+wY=,tag:VScymLP2C+qEW189fyFAmQ==,type:str]
+    - name: ENC[AES256_GCM,data:P6TpEYECPw==,iv:Icdpi3iy7Wxw8hdDN/37Aw6Hf3eaiJJpR+aAq4ap294=,tag:CORADfaypSjvV+xolFYDjw==,type:str]
+      value: ENC[AES256_GCM,data:Noaoby/+IEY=,iv:NHUbIWqtdwnKZkgaMWOGRUQ3gSRyyGJROIad9jneLlo=,tag:MCVuNcDFBpLEPlB9Dcm0oQ==,type:str]
+    - name: ENC[AES256_GCM,data:Q0ulEZDN1OmJ,iv:C+vKcA8W7+ry2W4xuJBh3dpxx7XSOZUyq3F7SLmIhmY=,tag:g9WODmyXhsdSlTCWiXEuRA==,type:str]
+      value: ENC[AES256_GCM,data:1Q2v66UXy+udQg7YMHY=,iv:XNs/4YBdrB6sWUgGR5xcthspWHdLT2ULCPoXyrzVTLY=,tag:PrBFhoQTkxBSFm3bV7Kc6A==,type:str]
+    - name: ENC[AES256_GCM,data:7a8cmd3V9u+VHw==,iv:jKnevXlwlsKi3KgxrjYZ1GW17JTN8P1iEPCBmzYvftk=,tag:Tgl+3990vO1AZzDe6oZvPw==,type:str]
+      value: ENC[AES256_GCM,data:FOFxyiMHBCoYjg==,iv:lIWJwLuCiIcnDhwTC48vydui2UVrJmpVVDP0SGpa5ng=,tag:EokoK0gWpFDRvyyF/mZe0w==,type:str]
 sops:
     age:
         - recipient: age1t4pcys2s6n3m2xt0lgn0e2yetcdwazyxfd0mztrza8qssye4vqeswusptz
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBSMkJVLzhFQjhEMUNiUklM
-            emdCK1lqRCtLUkxTNWIwb3FlRlQ5aHJMUkdFCmlOMEhDejdFTnNHSjcyZnM0RWNP
-            ZmhBSTNkWHZ6OVFWb1dMYTlpSWtPM3cKLS0tIGVnSktHNkljSlRmTVRmUVhKMHE1
-            Q3dIZS9hUUJhdEN4MkFPYkFZbXFzZ0UKz9bfVHAAaJXggK3k7giJcmWaC9p0it1v
-            z4Yd1IhkoeJEL0wQ1nrVA6QkupuPqDBQeXkNs5alkKNJj8R4y1+WeQ==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBBQkRnK2FVeXFaTlRlS2NU
+            bUJPSzlISEZ3U1l0NlI5bTZWazZlTjlXd0M4CnBLajNJdnRDUVJSYXNhVGpiRUhz
+            OFE2VlBPM0hmb3U4OVRhRHE4Y1RCVG8KLS0tIEdlVkx1ZFpuK0RXako0QmhRN2tu
+            VVJQVlVISjhBR0diMGVPT25JTTB6bncK7P20DjKZutUjv7+AqSq3/YL5GNyb0C4I
+            ab2KNh44Vi3Q8QZYYIEXoA2lXLRblCU0g9JgusjSuYCPzgctOpqdFg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-11-19T06:21:49Z"
-    mac: ENC[AES256_GCM,data:2PapHLO49AoYd7KumvtP5PoLfiuBpyli6MfvAcXQjyRrMri52Zgf+KJn5/a8trJBuLG+VvsaKaR4MIUfl+7O3BDXocQkCOeUhu/CcRDs5SNgBSheNSNP3JHqJp0DaShm3gnrgTm6bjBcMeX404L7eOw2qGpEH46TQ3HMykaRBck=,iv:IFP+tsJwZbGmAQQOt7yIv3Vl6k/AAbqqZzlrF//dvI0=,tag:NfHTMyenlSz2PgoF2xyqbg==,type:str]
+    lastmodified: "2025-11-19T08:53:34Z"
+    mac: ENC[AES256_GCM,data:CjOWi47OcntCN2xbamwxeQr6N+nwlzYkiC+SAuFCmJjS60b+uq5v4fbOn0+VnRy87+4WOufz4iFSlM3/eLteFSIrwcHDdyBZ46uhOVUtZHwrZxbYdd1IsWu02v/Fc9QqI6/wBajwjo/xZJn0G0X6s8DPgo2hwwSWfjCQe9T+0nA=,iv:HwQCrJhTSh8lVDgbEn+r8mxjSMWZ8tszBP5DURYNdLQ=,tag:mRFgNxcnKkg248fAgqnBbA==,type:str]
     encrypted_regex: ^ENCRYPTED_
     version: 3.11.0

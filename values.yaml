@@ -16,16 +16,16 @@ service:
     port: 80
     targetPort: 80
 ingress:
-  hosts:
-    - paths:
-        - path: /frontend
-          serviceName: nginx-frontend-myapp
-          servicePort: 80
-        - path: /backend
-          serviceName: nginx-backend-myapp
-          servicePort: 80
-
-tls: []
+    enabled: true
+    className: nginx
+    annotations: 
+        nginx.ingress.kubernetes.io/rewrite-target: /
+    hosts:
+        - host: ""
+          paths:
+            - path: /backend
+              pathType: Prefix
+    tls: []
 autoscaling:
     enabled: false
     minReplicas: 1
