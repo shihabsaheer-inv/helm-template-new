@@ -251,7 +251,7 @@ jobs:
           done
 ```
 
-### SOPS Key
+### 🔐 SOPS Key
 Please access the link view the key: https://drive.google.com/file/d/1LQOZRx0jc0AGzPCRJXiAVRnP7h4KxTMO/view?usp=sharing
 
 ## 🧠 Troubleshooting
