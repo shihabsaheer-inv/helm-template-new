@@ -16,7 +16,7 @@ service:
     port: 80
     targetPort: 80
 ingress:
-    enabled: true
+    enabled: false
     className: nginx
     annotations: 
         nginx.ingress.kubernetes.io/rewrite-target: /
