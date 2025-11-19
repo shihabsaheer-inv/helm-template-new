@@ -18,11 +18,12 @@ service:
 ingress:
     enabled: false
     className: nginx
-    annotations: {}
+    annotations: 
+        nginx.ingress.kubernetes.io/rewrite-target: /
     hosts:
-        - host: myapp.local
+        - host: ""
           paths:
-            - path: /
+            - path: /backend
               pathType: Prefix
     tls: []
 autoscaling:
@@ -42,7 +43,7 @@ istio:
         - myapp.local
     retries: 3
 rollout:
-    enabled: true
+    enabled: false
     # `strategy` may be used by rollout template if needed
     strategy: Canary
 # Config maps: dynamic driven from values
