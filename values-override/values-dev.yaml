@@ -8,14 +8,14 @@ global:
 # Always pull the latest image for quick dev iterations
 # ========================================
 image:
-    repository: nginx
+    repository: milleniaprophet/nginx-frontend
     pullPolicy: Always
 # ========================================
 # Service Configuration
 # Use NodePort for easy local/external access in development
 # ========================================
 service:
-    type: LoadBalancer
+    type: ClusterIP
     port: 80
     targetPort: 80
 # ========================================
@@ -85,24 +85,24 @@ env:
     - name: TEST_APP
       value: newapp
 ENCRYPTED_env:
-    - name: ENC[AES256_GCM,data:T7ZEkZf5aA==,iv:2fxXXDLtCOi+vdDgS+oHnk/K4/8SaEfLCxz4Ne0lqW4=,tag:gkeulBji33r3LZGdqsBvEw==,type:str]
-      value: ENC[AES256_GCM,data:nHi5K2RshU4=,iv:bJTuhU9tzjBZuwlCJqWtJ1kbpSON8g2EKZcwgCuGty8=,tag:f3pSM/mJW3QeBvXAMWmUSg==,type:str]
-    - name: ENC[AES256_GCM,data:RqWjgIqEHP6I,iv:J5mi+EFRGU3ZZtmHALx0TqVG9klUorXlbZ1yKcQhHMk=,tag:iEO8MPxatBEMWK6BD8GM0A==,type:str]
-      value: ENC[AES256_GCM,data:8H0R46tqGFGA47AnEt8=,iv:ClkJOGxPUd1H+TpXTJlryjvF+DFiorkv9Efxt53S18I=,tag:Iv7Jl1Y1b4LygHweWUWecw==,type:str]
-    - name: ENC[AES256_GCM,data:7TLvQ9WVWBTKgA==,iv:RJharGhbK9xtRQB4j73bQzs8vooPJCHFR+O5k92cAxg=,tag:9GU02ol2Gu3slxKBwOPmUw==,type:str]
-      value: ENC[AES256_GCM,data:HlgSNQwIf8AotA==,iv:ZYU47/w4VrIgFMh5bo+gl4SGH2gegKnw+3m0Er/qDLo=,tag:kk0Wax8Oc4XRcZz5IQlUSg==,type:str]
+    - name: ENC[AES256_GCM,data:XYHTPpb+GQ==,iv:PSNMFJO/gOsn0uteHfkHqyoLJ7cPMPr953rVg8Htr44=,tag:wDTX9uXLwbWoSxs0os/lrg==,type:str]
+      value: ENC[AES256_GCM,data:iHCy78XRYnM=,iv:63mk6kQQ0xdgqCk8zwwVZp7J0VC+42Js3EPOI1h8ae8=,tag:dylxSzzhCAmFlHkmxHsKxw==,type:str]
+    - name: ENC[AES256_GCM,data:T7LgwYLFnseX,iv:z4sBKKQNFfuh/6kVCt95A3sRrL4E0NH4nFRt/Yh2AeM=,tag:+CYEeERNSZCMIRH2gr38jQ==,type:str]
+      value: ENC[AES256_GCM,data:BeWfJFJlCtnsHB6RN8g=,iv:3esnhjH0CNbhVTjhmsHlrUkTGbvY2r8jH7nzGo6rjhA=,tag:Pr0DpdBbeYNmzdMBrlmh5g==,type:str]
+    - name: ENC[AES256_GCM,data:SvTfaNfX84B5QA==,iv:EuoPGfHKJZDmlUSw+LSoAL7GDx7qJbmgsFuxfINuUe8=,tag:VppDIJMTlm7jqu2yI+kTEg==,type:str]
+      value: ENC[AES256_GCM,data:uVIylzMTcA5e7Q==,iv:PiW/nDj/oE1mFIdIAT417Z9Yoy2E6Pg+wyTr0BOG+wY=,tag:VScymLP2C+qEW189fyFAmQ==,type:str]
 sops:
     age:
         - recipient: age1t4pcys2s6n3m2xt0lgn0e2yetcdwazyxfd0mztrza8qssye4vqeswusptz
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBoODV3ODVCbC94Z2xsZGsr
-            aFV5dXJ2MlpFTFlFUHJ1aWE3SWxEMW14dFZnCnVpa2xRN3VMdTJWcnoxOHRuZW1P
-            a1B4bXRBN2wzdUpLMk9xVFJOTnlQRUkKLS0tIGFPSnZzS0d0RG9PaXk1ZXhyc2R6
-            VWt1KzYrTUpONE1XQnpKeDBlaWQ1OXcKuwhChLRCWM08qoeq7hVWJZkYOKSWaKWN
-            ndyYZAPsFxigNgFnEv/4HLJ0y5wj3ixTRd9d3I8ytuQqLh6lxVrkLg==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBSMkJVLzhFQjhEMUNiUklM
+            emdCK1lqRCtLUkxTNWIwb3FlRlQ5aHJMUkdFCmlOMEhDejdFTnNHSjcyZnM0RWNP
+            ZmhBSTNkWHZ6OVFWb1dMYTlpSWtPM3cKLS0tIGVnSktHNkljSlRmTVRmUVhKMHE1
+            Q3dIZS9hUUJhdEN4MkFPYkFZbXFzZ0UKz9bfVHAAaJXggK3k7giJcmWaC9p0it1v
+            z4Yd1IhkoeJEL0wQ1nrVA6QkupuPqDBQeXkNs5alkKNJj8R4y1+WeQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-11-17T12:08:23Z"
-    mac: ENC[AES256_GCM,data:L5aiZGGd/iJUk5S4xNy376qMp5B0M2x5iuHSHUVTb0+SWAW4w/KtEi0GZtH5e3Sc6mARayi2/xGJYwQqHyLmjomEVgLBQ3T47Y1jVf+ySxfgXMSGub5XZdVNx7OiK+DxlYeb4hcW9fwnchmmGVym7IHHkLQ2vwmwwaG5mh1JNbc=,iv:3xJ3Dke8TqSpfa7AXB37L6A0Jc+7wJ8k6qWbPDB9hjg=,tag:tYhMzWzOAKL8WqL3ahKq2g==,type:str]
+    lastmodified: "2025-11-19T06:21:49Z"
+    mac: ENC[AES256_GCM,data:2PapHLO49AoYd7KumvtP5PoLfiuBpyli6MfvAcXQjyRrMri52Zgf+KJn5/a8trJBuLG+VvsaKaR4MIUfl+7O3BDXocQkCOeUhu/CcRDs5SNgBSheNSNP3JHqJp0DaShm3gnrgTm6bjBcMeX404L7eOw2qGpEH46TQ3HMykaRBck=,iv:IFP+tsJwZbGmAQQOt7yIv3Vl6k/AAbqqZzlrF//dvI0=,tag:NfHTMyenlSz2PgoF2xyqbg==,type:str]
     encrypted_regex: ^ENCRYPTED_
     version: 3.11.0

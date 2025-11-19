@@ -15,7 +15,9 @@ spec:
   {{- end }}
   rules:
     {{- range .Values.ingress.hosts }}
-    - host: {{ .host | quote }}
+    - {{- if .host }}
+      host: {{ .host | quote }}
+      {{- end }}
       http:
         paths:
           {{- range .paths }}
@@ -23,9 +25,9 @@ spec:
             pathType: {{ .pathType }}
             backend:
               service:
-                name: {{ include "mychart.fullname" $ }}
+                name: {{ .serviceName }}
                 port:
-                  number: {{ $.Values.service.port }}
+                  number: {{ .servicePort }}
           {{- end }}
     {{- end }}
 {{- end }}
