@@ -164,17 +164,17 @@ When you `git commit`, it:
 
 ### 🧱 Development
 ```bash
-helm upgrade --install my-app ./  --values values-override/values-dev.yaml
+helm secrets upgrade --install my-app ./ -f values-override/values-dev.yaml
 ```
 
 ### 🧪 Staging
 ```bash
-helm upgrade --install my-app ./  --values values-override/values-staging.yaml
+helm secrets upgrade --install my-app ./ -f values-override/values-staging.yaml
 ```
 
 ### 🏭 Production
 ```bash
-helm upgrade --install my-app ./  --values values-override/values-prod.yaml
+helm secrets upgrade --install my-app ./ -f values-override/values-prod.yaml
 ```
 
 ### 🧩 Preview manifests
